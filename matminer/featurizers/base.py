@@ -5,7 +5,7 @@ import traceback
 import warnings
 from abc import ABC, abstractmethod
 from functools import partial
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool, cpu_count, get_context
 
 import numpy as np
 import pandas as pd
@@ -457,7 +457,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin, ABC):
                                            ignore_errors=ignore_errors,
                                            return_errors=return_errors,
                                            pbar=pbar)
-            with Pool(self.n_jobs) as p:
+            with get_context("spawn").Pool(self.n_jobs) as p:
                 func = partial(self.featurize_wrapper,
                                return_errors=return_errors,
                                ignore_errors=ignore_errors)
